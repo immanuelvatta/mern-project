@@ -12,23 +12,20 @@ import {
 import { auth } from "../firebase/firebase";
 import { tokens } from "../context/theme";
 import { useTheme } from "@emotion/react";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { sendPasswordResetEmail } from "firebase/auth";
 import LogoSVG from "../assets/svg/Logo";
 import useColorTheme from "../hooks/FormStyles";
 import Copyright from "../components/global-components/copyright/Copyright";
 import { AuthContext } from "../context/authContext";
 
-const Registration = ({ component: RouteComponent, ...rest }) => {
+const PasswordReset = ({ component: RouteComponent, ...rest }) => {
   const [shouldLoad, setShouldLoad] = useState(false);
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState(false);
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [passwordsMatch, setPasswordsMatch] = useState(true);
   const [bgImageIdx, setBgImageIdx] = useState(0);
   const [imgArr, setImgArr] = useState([]);
   const [bgImgString, setBgImgString] = useState(
-    "https://images.pexels.com/photos/1546168/pexels-photo-1546168.jpeg"
+    "https://images.pexels.com/photos/389818/pexels-photo-389818.jpeg"
   );
 
   const navigate = useNavigate("");
@@ -44,7 +41,7 @@ const Registration = ({ component: RouteComponent, ...rest }) => {
 
   useEffect(() => {
     // Define an asynchronous function to fetch images from the Pexels API
-    const getImage = async (image = "real%20estate", numImage = 15) => {
+    const getImage = async (image = "house%20interiors", numImage = 15) => {
       // Construct the API URL with the provided image query and per_page parameter.
       const url = `https://api.pexels.com/v1/search?query=${image}&per_page=${numImage}`;
       // Make an HTTP GET request to the Pexels API.
@@ -99,7 +96,7 @@ const Registration = ({ component: RouteComponent, ...rest }) => {
     }
   }, [bgImageIdx, imgArr]);
 
-  const handleSubmit = async (e) => {
+  const handleReset = (e) => {
     e.preventDefault();
     setEmailError(false);
 
@@ -107,31 +104,17 @@ const Registration = ({ component: RouteComponent, ...rest }) => {
       setEmailError(true);
       return;
     }
-
-    if (password !== confirmPassword) {
-      setPasswordsMatch(false);
-      return;
-    }
-    setPasswordsMatch(true);
-
-    try {
-      const newUser = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      setCurrentUser(newUser.user.uid);
-      localStorage.setItem("uid", newUser.user.uid);
-      setCurrentUserEmail(newUser.user.email);
-      localStorage.setItem("email", newUser.user.email);
-      // console.log("registration successful", user);
-      navigate("/admin");
-    } catch (err) {
-      console.error("Registration Error:", err);
-    }
+    sendPasswordResetEmail(auth, email)
+      .then(() => {
+        console.log(sendPasswordResetEmail(auth, email));
+        alert("Check your email");
+      })
+      .catch((error) => {
+        console.error("Password Reset Error:", error);
+        alert("An error occurred. Please try again later.");
+      });
   };
-  
+
   useEffect(() => {
     currentUser ? navigate("/admin") : setShouldLoad(true);
   }, [currentUser]);
@@ -183,9 +166,9 @@ const Registration = ({ component: RouteComponent, ...rest }) => {
               sx={{ m: 1 }}
             />
             <Typography component="h1" variant="h4">
-              Sign up
+              Reset Password
             </Typography>
-            <Box component="form" noValidate onSubmit={handleSubmit}>
+            <Box component="form" noValidate onSubmit={handleReset}>
               <TextField
                 margin="normal"
                 required
@@ -203,53 +186,18 @@ const Registration = ({ component: RouteComponent, ...rest }) => {
                 error={emailError}
                 helperText={emailError ? "Invalid email address" : ""}
               />
-              <TextField
-                margin="normal"
-                required
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                autoComplete="new-password"
-                value={password}
-                InputLabelProps={{ ...colorTheme.inputLabelProps }}
-                InputProps={{ ...colorTheme.inputProps }}
-                sx={{ ...colorTheme.inputStyling }}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-              <TextField
-                required
-                fullWidth
-                name="confirmPassword"
-                label="Confirm Password"
-                type="password"
-                id="confirmPassword"
-                autoComplete="new-password"
-                value={confirmPassword}
-                InputLabelProps={{ ...colorTheme.inputLabelProps }}
-                InputProps={{ ...colorTheme.inputProps }}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                sx={{
-                  mt: 3,
-                  mb: 2,
-                  ...colorTheme.inputStyling,
-                }}
-                error={!passwordsMatch}
-                helperText={!passwordsMatch && "Passwords do not match"}
-              />
               <Button
                 type="submit"
                 fullWidth
                 variant="contained"
                 sx={{ ...colorTheme.submitButton }}
               >
-                Sign Up
+                Send Email
               </Button>
               <Grid container justifyContent="flex-end">
                 <Grid item>
                   <RouterLink to={"/login"} variant="body2">
-                    Already have an account? Sign in
+                    Go back to Sign In
                   </RouterLink>
                 </Grid>
               </Grid>
@@ -261,4 +209,5 @@ const Registration = ({ component: RouteComponent, ...rest }) => {
     );
   }
 };
-export default Registration;
+
+export default PasswordReset;
