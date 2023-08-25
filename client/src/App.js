@@ -19,7 +19,6 @@ import PasswordReset from "./views/PasswordReset";
 
 function App() {
   const [theme, colorMode] = useMode();
-
   const [navShouldRender, setNavShouldRender] = useState(true);
   const location = useLocation();
   const { currentUser } = useContext(AuthContext);
@@ -27,6 +26,8 @@ function App() {
   useEffect(() => {
     if (!currentUser) {
       setNavShouldRender(false);
+    }else{
+      setNavShouldRender(true);
     }
   }, [location, currentUser]);
 
@@ -45,7 +46,7 @@ function App() {
             <Route path="/listing/:id" element={<SingleListing />} />
             <Route path="/admin//*" element={<Admin />} />
             <Route path="/properties" element={<Properties />} />
-            <Route path="/contacts" element={<Contacts />} />
+            <Route path="/contact" element={<Contacts />} />
             <Route path="/about" element={<About />} />
           </Routes>
         </div>

@@ -1,33 +1,34 @@
 import React, { useState } from "react";
 import TextField from '@mui/material/TextField';
-import { Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select } from '@mui/material';
+import { Box, Checkbox, FormControl, FormControlLabel, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import Button from '@mui/material/Button'
 import useColorTheme from "../../hooks/FormStyles"
+import UploadImageModal from './UploadImageModal'
 
 const ListingForm = (props) => {
   const { initialListing, onSubmitProp } = props;
   const [listing, setListing] = useState(initialListing);
-
+  const [isOpen, setIsOpen] = useState(false);
   const colorTheme = useColorTheme()
 
   const handleSubmit = e => {
     e.preventDefault();
     onSubmitProp(listing);
     setListing({
-      // name: '',
-      // type: '',
-      // numOfBedrooms: 0,
-      // numOfBathrooms: 0,
-      // size: 0,
-      // description: '',
-      // price: '',
-      // isFeatured: false,
-      // address: '',
-      // city: '',
-      // state: '',
-      // zipCode: '',
-      // imgUrl: '',
+      name: '',
+      type: '',
+      numOfBedrooms: 0,
+      numOfBathrooms: 0,
+      size: 0,
+      description: '',
+      price: '',
+      isFeatured: false,
+      address: '',
+      city: '',
+      state: '',
+      zipCode: '',
     })
+    setIsOpen(true)
   }
 
   const onChangeHandler = (e) => {
@@ -71,7 +72,7 @@ const ListingForm = (props) => {
                   onChange={onChangeHandler}
                   value={listing.numOfBedrooms}
                   InputLabelProps={{ ...colorTheme.inputLabelProps }}
-                  InputProps={{ ...colorTheme.inputStyling }}
+                  InputProps={{ ...colorTheme.inputProps }}
                   className='pe-2 mb-3'
                   sx={{
                     ...colorTheme.inputStyling,
@@ -81,11 +82,11 @@ const ListingForm = (props) => {
                 <TextField
                   name='numOfBathrooms'
                   type='number'
-                  label="Number Of Batrooms"
+                  label="Number Of Bathrooms"
                   onChange={onChangeHandler}
                   value={listing.numOfBathrooms}
                   InputLabelProps={{ ...colorTheme.inputLabelProps }}
-                  InputProps={{ ...colorTheme.inputStyling }}
+                  InputProps={{ ...colorTheme.inputProps }}
                   className="mb-3"
                   sx={{
                     ...colorTheme.inputStyling,
@@ -177,21 +178,6 @@ const ListingForm = (props) => {
                   sx={{
                     ...colorTheme.inputStyling,
                     width: '33%',
-                  }}
-                />
-              </div>
-              <div>
-                <TextField
-                  name='imgUrl'
-                  label="Image Url"
-                  onChange={onChangeHandler}
-                  value={listing.imgUrl}
-                  InputLabelProps={{ ...colorTheme.inputLabelProps }}
-                  InputProps={{ ...colorTheme.inputProps }}
-                  fullWidth
-                  className='mb-3'
-                  sx={{
-                    ...colorTheme.inputStyling,
                   }}
                 />
               </div>

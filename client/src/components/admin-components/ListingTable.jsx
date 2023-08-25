@@ -55,7 +55,6 @@ const ListingTable = () => {
     },
   ];
 
-
   useEffect(() => {
     getList();
   }, []);
@@ -69,6 +68,7 @@ const ListingTable = () => {
   }
 
   const handleDeleteClick = (id, name = "item") => {
+    // axios.delete("http://localhost:8000/api/image/delete")
     deleteById(id)
     setListingList((current) => current.filter(el => el._id !== id))
     setToaster(`Successfully deleted ${name}.`)
@@ -77,7 +77,6 @@ const ListingTable = () => {
     }, 4000);
   }
   const handleEditClick = (id) => {
-    console.log(id);
     navigate(`${id}/edit`)
   }
 
@@ -95,7 +94,6 @@ const ListingTable = () => {
           pageSizeOptions={[5, 10]}
         />
       </div>
-
     </div >
   )
 }
